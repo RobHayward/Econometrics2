@@ -1,0 +1,165 @@
+\documentclass[12pt, a4paper, oneside]{article} % Paper size, default font size and one-sided paper
+%\graphicspath{{./Figures/}} % Specifies the directory where pictures are stored
+%\usepackage[dcucite]{harvard}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage[comma, sort&compress]{natbib}% Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers' 
+\usepackage{graphicx}
+%\bibliographystyle{plainnat}
+\bibliographystyle{agsm}
+\usepackage[colorlinks = true, citecolor = blue, linkcolor = blue]{hyperref}
+%\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+%\renewcommand[\harvardurl]{URL: \url}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygrey}{gray}{0.95}
+\lstset{backgroundcolor=\color{mygrey}}
+\begin{document}
+\title{Econometrics}
+\author{Rob Hayward}
+\date{\today}
+\maketitle
+\section*{ARDL models}
+This comes from \href{http://davegiles.blogspot.ca/2013/03/ardl-models-part-i.html}{Dave Giles ARDL}.  Once again, thanks Dave. 
+
+The basic form of the model is
+
+\begin{equation}\label{ARDL}
+y_t = \beta_0 + \beta_1 y_{t-1} + \dots + \beta_k y_{t-p} +\alpha_0 x_t + \alpha_1 x_{t-1} \dots \alpha_q x_{t-q} + \varepsilon_t
+\end{equation}
+
+This is an ARDL(p, q) model.  The model has an \emph{autoregressive element}. As a result of the lagged values of the dependent variable, this model will yield \emph{biased estimates} of the parameters; if the error term has \emph{autocorrelation} the OLS estimates will be \emph{inconsistent}.  
+
+\href{http://ideas.repec.org/p/dgr/eureir/1765001190.html}{Frances and Oest (2004)} provide a historical overview of the \emph{Koyck model}. There is also the \href{http://www.econometricsociety.org/abstract.asp?ref=0012-9682&vid=33&iid=1&aid=0012-9682%28196501%2933%3A1%26lt%3B178%3ATDLBCA%26gt%3B2%2E0%2ECO%3B2-0&s=-9999}{\emph{Almon distributed lag model}}.  \href{http://www.amazon.com/Distributed-Lags-Estimation-Formulation-Textbooks/dp/0444860134/ref=sr_1_sc_2?s=books&ie=UTF8&qid=1362589275&sr=1-2-spell&keywords=dhrymas+distributed+lag}{Dhrymes (1971)} provides an overview. 
+
+\href{http://davegiles.blogspot.ca/2013/06/ardl-models-part-ii-bounds-tests.html}{Second part}.  Thanks Dave. 
+
+This is an implementation of the \emph{Bounds Test}.  This is a test to see if there is a long-run relationship. As usual, there are three types of data that may be encountered: 
+\begin{itemize}
+\item stationary data that can be modelled in the levels with OLS
+\item non-stationary data (say $I(0)$ data) that can be modelled in first difference with OLS
+\item non-statonary data that are integrated and cointegrated. These data can give us a long-run relationship with OLS and and a short-term correction with the \emph{Error-correction model}
+\end{itemize}
+
+The ARDL/Bounds methodology of Persaran and Shinn (1999) and Perseran et al (2001) has a number of features that make it attractive.
+
+\begin{itemize}
+\item It can be used with a mixture of $I(0)$ and $I(1)$ data.  
+\item It involves just a single equation set-up
+\item Different variables can be assigned different lag lengths.
+\end{itemize}
+
+The road map is as follows 
+\begin{enumerate}
+\item Make sure that none of the variables are $I(2)$
+\item formulate an \emph{unrestricted} ECM
+\item Determine the appropriate lag structure
+\item Make sure that the errors are serial independent
+\item Make sure that the model is \emph{dynamicall stable}
+\item Perform a \emph{Bounds Test} to see if there is evidence of a long-run relationship
+\item If the answer to the previous question is "yes", estimate a long-run model as well as a \emph{restricited} ECM. 
+\item Use these results to estimate the long run relationship and the short run relatinship
+\end{enumerate}
+
+\subsection*{Step one}
+Use the ADF and KPSS tests for $I(2)$
+
+\subsection*{Step two}
+Formulate the model
+
+\begin{equation}
+\Delta y_1 = \beta_0 + \sum \beta_i \Delta y_{t-i} + \sum \gamma_j \Delta x_{1, t-j} + \sum \delta_k \Delta x_{2, t-k} + \theta_0 y_{t-1} + \theta_1 x_{1, t-1} + \theta_2 x_{2, t-1} + \varepsilon_t
+\end{equation}
+
+This is like an unrestricted ECM. 
+
+\subsection*{Step three}
+The appropriate lag lengths for $p1$, $q1$ and $q2$ need to be selected.  Zero length lags may not be required.  This is usually carried out with \emph{Information Cirteria}.  Dave uses a combination of SIC and significance of coefficients. 
+
+\subsection*{Step four}
+A key assumption is that the errors must be serially independent. This requirement can also influence the selection of lag length. Use the LM test to test the null that there is serial independence against the alternative that they are AR or MA. 
+
+\subsection*{Step five}
+The model must be tested for \emph{dynamic stability}.  There is more \href{http://davegiles.blogspot.ca/2013/06/when-is-autoregressive-model.html}{here}.  This essentially means that the auto-regressive coefficients must lie within the unit circle and so there is no \emph{unit root}.  The roots of the \emph{characteristic equation} must lie outside the unit circle. 
+
+\subsection*{Step six}
+Now perform the \emph{F-test} of the hypothesis $H0: \theta_0 = \theta_1 = \theta_2 = 0$; against the alternative that $H0$ is not true. As in the conventional \emph{conintegraton test}, this is a test of \emph{absence} of a long-run relationship. The distribution of the F-statistic is non-standard.  However, Pesaran et al have \emph{bounds} on the critical values for the \emph{asymptotic} distribution of the F-test for different number of variables that range from the case of $I(0)$ to $I(1)$.  If the F statistic falls below the lower bound, conclude that the variables are $I(0)$ so there is no cointegration; if the test exceeds the upper bound, there is contegration. 
+
+As a cross-check, test $H0: \theta_0 = 0$ against the alternative $H1: \theta_0 < 0$
+
+\subsection*{Step seven}
+If the bounds tests suggestst that there is cointegration, the relationship can be estimated. 
+
+\begin{equation}
+y_t = \alpha_0 + \alpha_1 x_{1, t} + \alpha_2 x+{2, t} + \varepsilon_t
+\end{equation}
+and the ECM
+
+\begin{equation}
+\Delta y_t = \beta_0 + sum \beta_i \Delta y_{t-i} + \sum \gamma_j \Delta x_{1, t-j} + \sum \delta_k x_{2, t-k} + \psi z_{t-1} + \varepsilon
+\end{equation}
+
+where $z_{t-1} = y_{t-1} - a_0 - a_1 x_{1,t} - a_2 x_{2,t}$
+
+\subsection*{Step Eight}
+Extract the long-run effects from the unrestricted ECM.  From Equation \ref{ARDL}, note that in the long-run $\Delta y_t = \Delta x_{1,t} = \Delta x_{2,t} = 0$ and therefore, the long-run coefficients for $X_1$ and $X_2$ are $-(\theta_1/\theta_0)$ and $-(\theta_2/\theta_0)$ respectively. 
+
+
+\subsection*{Example}
+COmplete this after the Granger Causality. 
+
+
+
+
+\section*{Dynamic Stability}
+An AR(p) process of the form, 
+
+\begin{equation}
+y_t = \gamma_1 y_{t-1} + \gamma_2 y_{t-2} \dots \gamma_p y_{t-p} + \varepsilon
+\end{equation}
+
+Will be dynamically stable if the roots of the \emph{characteristic equation} 
+
+\begin{equation}
+1 - \gamma_1 z - \gamma_2 z^2 \dots \gamma_p z^p = 0
+\end{equation}
+
+lie \emph{strictly outside} the unit circle
+
+or, if the characteristic equation is defined as 
+
+\begin{equation}
+z^p - \gamma_1 z^{p-1} - z^{p-2} \dots \gamma_P = 0
+\end{equation}
+
+lie \emph{strictly inside} the unit circle.
+
+Therefore, with a AR(1) model, $p = 1$ and the characteristic equation is 
+
+\begin{equation}
+1 - \gamma_1 z = 0
+\end{equation}
+
+Solving for z, $z = 1/\gamma_1$, so the stationarity condition is that $|1/\gamma_1 | > 1$ or$ |\gamma_1 | >1$.  With an AR(2), 
+
+\begin{equation}
+1 - \gamma_1 z - \gamma_2 z^2 =0
+\end{equation}
+
+lie strictly \emph{outside} the unit circle, or
+
+\begin{equation}
+z^2 - \gamma_1 z - \gamma_2 = 0
+\end{equation}
+
+must be strictly \emph{inside} the unit circle. 
+
+\section*{Grange Causality}
+\href{http://davegiles.blogspot.ca/2011/04/testing-for-granger-causality.html}{Granger Causality}.  I need to go through this. 
+
+
+\end{document}
