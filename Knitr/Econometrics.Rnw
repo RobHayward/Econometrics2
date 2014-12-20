@@ -23,9 +23,83 @@
 \author{Rob Hayward}
 \date{\today}
 \maketitle
+\section{Panel data}
+This will come from the vignette \href{http://cran.r-project.org/web/packages/plm/vignettes/plm.pdf}{The plm package} available on CRAN. This is also called \emph{longitudinal data} in other fields. 
+
+The general model
+\begin{equation}
+y_{it} = \alpha_{it} + \beta_{it}^Tx_{it} + u_{it}
+\end{equation}
+where, $i = 1 \dots n$ is the individual (group or country), $t = 1 \dots T$ is time and $u$ is a random disturbance with mean zero. 
+
+A number of assumptions are required to estimate the model. A common assumption is that $\alpha_{it} = \alpha$ for all i and t and $\beta_{it} = \beta$ for all i and t. This gives the \emph{pooling model}
+\begin{equation}
+y_{it} = \alpha = \beta^T X_{it} + u_{it}
+\end{equation}
+
+To model individual hetrogeneity, it is possible to assume that the error term is composed of two parts, one of which is specific to the individual that does not change over time. This is the \emph{unobserved effects} model. 
+
+\begin{equation}
+y_{it} = \alpha + \beta^T x_{it} + u_i + \varepsilon_{it}
+\end{equation}
+
+The estimation method depends on the proprerties of the two error components. Either of these can be assumed to be independnt of the regressors and the other error term. It is usual to assume that the ideosyncratoc error is independent of each.  If the individual error is correlated with the regressors, the OLS estimate of $\beta$ would be inconsistent so it is usual in this case to treat $u_i$ as another set of parameters to be estimated. This means that $\alpha_i = \alpha_{it}$.  This is called the \emph{fixed effects} model. 
+
+If it is assumed that the individual component $u_{it}$ is uncorrelated with the regressors, a \emph{random effects} model may be computed. OLS may be consistent but correlation across the composite error term means that feasible general least squares estimation is required. A \emph{first difference} estimator can be used if there is serial correlation in the errors.  The \emph{between} model is computed on the average individual values over time.  It discards information about intragroup variability. 
+
+The usual method is to 
+\begin{itemize}
+\item Test for poolability (do the coefficients apply over all individuals?)
+\item If coefficients appear to be stable, look for group effects in individuals and time
+\item Use Hausman-type test to establish fixed or random effects if hetrogeneity is established. Use random effects if possible as it is more robust. 
+\item Test the error term one effects are established. 
+\end{itemize}
+
+There are also problems with the dynmamic elements and the faiure of strict exogeneity. 
+
+\subsection{Data structure}
+\lstinline{pdata.frame} function will create the panel version of a data.frame.  It is assumed that the first two columns are the individal and time indices or elese the appropriate columns are identified. 
+
+\lstinline{plm} function will estimate with different models and different effects. 
+
+<<data, warning=FALSE, message=FALSE>>=
+library(plm)
+data("Grunfeld")
+head(Grunfeld)
+@
+<<data2, warning=FALSE, message=FALSE>>=
+data("EmplUK")
+E <- pdata.frame(EmplUK, index = c("firm", "year"), drop.index = TRUE,
+                  row.names = TRUE)
+head(E)
+@
+
+There are particular methods for the \lstinline{pseries} that come from extracting a series from a \lstinline{pdata.frame}. \lstinline{summary}will compare the variance of the variable that is due to individual and time components; the \lstinline{matrix} will create a matrix with individual as rows and time as columns.  
+
+<<data3, message=FALSE, warning=FALSE>>=
+summary(E$emp)
+head(as.matrix(E$emp))
+@
+There are \lstinline{Between, between} and \lstinline{Within} functions to compute the mean and the individual deviation from the mean. 
+<<data4, message=FALSE, warning=FALSE>>=
+head(lag(E$emp, 0:2))
+@
+\subsection{Estimation}
+Several different models can be estimated with the standard \lstinline{plm} method. 
+<<estimate, warning=FALSE, message=FALSE>>=
+grun.fe <- plm(inv ~ value + capital, data = Grunfeld, model = "within")
+grun.re <- plm(inv ~ value + capital, data = Grunfeld, model = "random")
+summary(grun.re)
+@
+The fixed effects can be extracted using the \lstinline{fixef} function, specifying whether this is measured as the level, the deviation from the mean or the deviation from the first level. 
+<<fixed, warning=FALSE, message=FALSE>>=
+summary(fixef(grun.fe, type = "dmean"))
+@
+
+
 
 \section*{Asymptotic theory}
-As an overview of asymptotic theory.  \href{http://davegiles.blogspot.com/2014/10/illustrating-asymptotic-behaviour-part-i.html}{Dave GIles} uses a monte carlo experiment to illustrate the behaviour of the OLS estimator.
+As an overview of asymptotic theory.  \href{http://davegiles.blogspot.com/2014/10/illustrating-asymptotic-behaviour-part-i.html}{Dave Giles} uses a monte carlo experiment to illustrate the behaviour of the OLS estimator.  
 
 \begin{equation*}
 y_t = \beta_0 + \beta_1 y_{t-1} + \varepsilon_t, \quad t = 2, 3 \dots \quad y_1 = 0
