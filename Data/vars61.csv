@@ -1,0 +1,26 @@
+Order PWT61,Heading PWT,unit,Order Appendix,,Heading Appendix
+1,isocode,(country code),0,,-
+22,yr,(year),0,,-
+3,POP,(000s),1,,Population
+2,XRAT,(US=1),2,,Exchange rate
+15,cgdp,($ current),3,Current Price Entries,Real Gross Domestic Product per Capita (current prices)
+4,cc,(%),4,Current Price Entries,Consumption share of CGPD
+6,ci,(%),5,Current Price Entries,Investment share of CGDP
+5,cg,(%),6,Current Price Entries,Government share of CGDP
+18,p,(US=100),7,Current Price Entries,Price Level of Gross Domestic Product
+19,pc,(ppp/xrate),8,Current Price Entries,Price Level of Consumption
+20,pg,(ppp/xrate),9,Current Price Entries,Price Level of Government
+21,pi,(ppp/xrate),10,Current Price Entries,Price Level of Investment
+10,openc,(%),11,Current Price Entries,Openness in current prices
+23,cgnp,(%),12,Current Price Entries,Ratio of GNP to GDP (current prices)
+12,csave,(%),13,Current Price Entries,Current Savings
+17,y,(US=100),14,Current Price Entries,CGPD relative to the United States
+14,rgdpl,($ constant),15,Constant Price Entries,Real GDP per capita (Constant price: Laspeyres)
+13,rgdpch,($ chain),16,Constant Price Entries,Real GDP per capita (Constant price: Chain series)
+24,rgdpeqa,($ eq. adult),17,Constant Price Entries,Real GDP chain per equivalent adult
+25,rgdpwok,($ worker),18,Constant Price Entries,Real GDP chain per worker
+16,rgdptt,($ terms of trade),19,Constant Price Entries,Real Gross Domestic Income (RGDPL adjusted for Terms of Trade changes)
+11,openk,(%),20,Constant Price Entries,Openness in constant prices
+7,kc,(%),21,Constant Price Entries,Consumption share of RGDPL
+8,kg,(%),22,Constant Price Entries,Government share of RGDPL
+9,ki,(%),23,Constant Price Entries,Investment share of RGDPL
