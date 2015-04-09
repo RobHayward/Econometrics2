@@ -23,6 +23,18 @@
 \author{Rob Hayward}
 \date{\today}
 \maketitle
+\section{Bootstrap}
+This comes from \href{http://www.onthelambda.com/2015/03/21/im-all-about-that-bootstrap-bout-that-bootstrap/}{On the lambda}. 
+
+There are four ways of calculating confidence intervals. 
+\begin{itemize}
+\item z interval method: assume that the sampling distribution is normal around the sample mean ($1.96 \pm \times \text{standard deviation}$)
+\item the t inteval method that assumes that the population is normally distrubuted and the sampling distribution is normally distributed around the samplemean |(t-distribution quantile at 0.975[appropriate degrees of freedom] $\times \text{standard error}$). 
+\item Basic bootstrap estimation with \lstinline{boot()} or \lstinline{CI.boot()}. 
+\item Adjusted percentile with \lstinline{boot()} or \lstinline{CI.boot()}.
+\end{itemize}
+The evidence shows that the adjusted boostrap is the best.  The Bradley Efron paper is linked. 
+
 \section{Kalman Filter}
 This comes from \href{http://www.magesblog.com/2015/01/kalman-filter-example-visualised-with-r.html}{http://www.magesblog.com/2015/01/kalman-filter-example-visualised-with-r.html}
 <<K-filter>>=
