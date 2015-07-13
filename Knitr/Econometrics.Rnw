@@ -23,6 +23,9 @@
 \author{Rob Hayward}
 \date{\today}
 \maketitle
+\section{Multivariate volatility}
+This comes from \href{http://eranraviv.com/multivariate-volatility-forecasting-1/}{Eran Raviv}.  The code is in multivariate.R. 
+
 \section{Bootstrap}
 This comes from \href{http://www.onthelambda.com/2015/03/21/im-all-about-that-bootstrap-bout-that-bootstrap/}{On the lambda}. 
 
