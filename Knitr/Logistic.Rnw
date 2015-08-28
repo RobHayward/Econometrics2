@@ -1,0 +1,17 @@
+\documentclass{hitec}
+\title{Logistic Regression}
+\author{Rob Hayward}
+\usepackage[colorlinks = true, citecolor = blue, linkcolor = blue]{hyperref}
+\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+
+\begin{document}
+\maketitle
+
+This comes from \href{http://www.r-bloggers.com/evaluating-logistic-regression-models/}{R-bloggers} and \href{http://rpubs.com/amathew/100895}{R-pubs}. 
+
+The first part is not as clear as it could be.  This can be replaced by something better.  That could include Penn.  However, the second part has a lot of useful diagnostic tests. 
+
+The working for the first part is in the R folder. 
+
+Eventually turn this into a document that can be used for logistic regression analysis of credit data. 
+\end{document}
