@@ -1,0 +1,42 @@
+\documentclass{hitec}
+\title{GLM}
+\author{Rob Hayward}
+\usepackage[colorlinks = true, citecolor = blue, linkcolor = blue]{hyperref}
+\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+\usepackage{amsmath}
+
+\begin{document}
+\maketitle
+THere is a file in the R folder with some introduction. 
+
+\href{http://www.sumsar.net/blog/2013/10/how-do-you-write-your-model-definitions/}{Rasmus Baath}.  What model is assumed and fitted?  OLS can be seen as one method of fitting a linear model (assuming normally distributed residuals). It is important to have the assumptions behind the model up front. Rather than thinking from the staring point of 
+\begin{subequations}
+\begin{align}
+y_i = & \alpha + \beta x_i + \varepsilon_i\\
+\varepsilon_i \sim & Normal(0, \sigma)
+\end{align}
+  \end{subequations}
+use,
+\begin{subequations}
+\begin{align}
+y_i \sim & Normal(\mu_i, \sigma)\\
+\mu_i = & \alpha + \beta x_i
+\end{align}
+\end{subequations}
+\begin{itemize}
+\item The stochasitic parts of the model are now not regarded as errors. 
+\item There is a generalisation to more complex models but just changing the assumed distribution of the stochastic component. For example, a \emph{Poisson model} is
+\begin{subequations}
+\begin{align}
+y_i \sim & Poisson(\mu_i, \sigma)\\
+log(\mu_i) = & \alpha + \beta x_i
+\end{align}
+\end{subequations}
+\end{itemize}
+Here is the \href{https://en.wikipedia.org/wiki/Generalized_linear_model}{Wikipedia page}.  The general model is of the form: 
+\begin{equation}
+E(\mathbf{Y}) = \mathbf{\mu} = g^{-1}(\mathbf{X}\mathbf{\beta})
+\end{equation}
+where, $E(\mathbf{Y})$ is the expected vaule of $\mathbf{Y}$; $\mathbf{X \beta}$ is the linear predictor; g is the \emph{link function}. 
+\href{http://www.magesblog.com/2015/08/generalised-linear-models-in-r.html}{Markus Gesman}. This looks at linear models from the side of the distribution.  
+\end{document}
