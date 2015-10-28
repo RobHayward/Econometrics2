@@ -1,0 +1,60 @@
+\documentclass[12pt]{hitec} % Paper size, default font size and one-sided paper
+%\graphicspath{{./Figures/}} % Specifies the directory where pictures are stored
+%\usepackage[dcucite]{harvard}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage[comma, sort&compress]{natbib}% Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers' 
+\usepackage{graphicx}
+%\bibliographystyle{plainnat}
+\bibliographystyle{agsm}
+\usepackage[colorlinks = true, citecolor = blue, linkcolor = blue]{hyperref}
+%\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+%\renewcommand[\harvardurl]{URL: \url}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygrey}{gray}{0.95}
+\lstset{backgroundcolor=\color{mygrey}}
+\begin{document}
+\title{Bootstrap}
+\author{Rob Hayward}
+\date{\today}
+\maketitle
+\section{Introduction}
+This comes from \href{http://www.win-vector.com/blog/2015/09/bootstrap-evaluation-of-clusters/}{Practical data science}
+
+This is work on cluster analysis. Is this a true cluster or just a matter of chance.  Try to to disentangle this effect, run some boostraps by drawing samples and then testing to see whether the clusters remain under this re-sampling. This can be carried out in the \lstinline{clusterboot()} function from the \lstinline{fpc} package. 
+
+This will use the \emph{Jaccard coefficient} to measure the similarity between the sets. It is ratio of the number of elements in the intersection of A and B with the number of elements in the union of A and B. 
+
+The formal method
+\begin{itemize}
+\item Cluster the data
+\item Draw a new dataset (of similar size) with replacement so that some elements can be used more than once and some can be ignored 
+\item Find the cluster with the highest Jaccard coefficient in the new sample.  Make the match.  For those matches that have a Jaccard coefficient below 0.5, disolve the cluster.  A high dissolution rate is a sign that it is a spurious cluster. 
+\item The cluster stability is the mean Jaccard coefficient over all the sampling. Values less than 0.6 are questionable, between 0.6 adn 0.75 are firm clusters; clusters above 0.85 are very firm.
+\end{itemize}
+
+<<cluster, message=FALSE, echo=FALSE, warning=FALSE>>=
+protein <- read.table("../../Data/protein.txt", sep = "\t", header = TRUE)
+summary(protein)  
+@
+Use all the except the first column, scale columns to be zero mean and unit variance and put this in a matrix. Stoes the centres and standard deviations of the data so that you can un-centre them later.  
+<<mangle, message=FALSE, echo=FALSE, warning=FALSE>>=
+vars.to.use <- colnames(protein)[-1]
+pmatrix <- scale(protein[, vars.to.use])
+pcenter <- attr(pmatrix, "scaled:center")
+pscale <- attr(pmatrix, "scaled:scale")
+@
+Cluster the data
+<<cluster2, message=FALSE, fig.width=6, echo=FALSE, warning=FALSE>>=
+d <- dist(pmatrix, method = "euclidean")
+pfit <- hclust(d, method = "ward")
+plot(pfit, labels = protein$Country)
+rect.hclust(pfit, k=5)
+@
+
+\end{document}
