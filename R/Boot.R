@@ -1,4 +1,5 @@
 # from http://www.mayin.org/ajayshah/KB/R/documents/boot.html
+require(boot)
 x <- c(10, 20, 30, 40, 50)
 d <- c(3, 2, 2)
 samplemean <- function(x, d){

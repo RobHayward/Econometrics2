@@ -81,3 +81,4 @@ legend(x="topleft",
        bty="n", lwd=rep(2,5), 
        lty=c(NA,rep(1,4)),
        pch=c(1,rep(NA,4)))
+
