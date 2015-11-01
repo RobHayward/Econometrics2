@@ -1,0 +1,33 @@
+---
+title: "Instruments"
+author: "Rob Hayward"
+date: "1 November 2015"
+output: html_document
+---
+
+# Instrumental variables
+
+* [Original link](http://blog.revolutionanalytics.com/2015/10/instrumental-variables.html)
+
+* [Slides 1](http://files.meetup.com/1225993/H_Kang_BARUG_10_20_15.pptx)
+* [Slides 2](http://files.meetup.com/1225993/HK_2.pptx)
+
+Lack of random experiment means that cofounders can have an influence.  For example, ability affects the amount of schooling and the future earnings. 
+
+Instruments are added to induce the element of randomness into the model. There are three assumptions underlying the *instruments*. 
+
+* The instruments are relevant to the process ()
+* The instrument only affects the exposure variable not the outcome
+* There are no unmeasured cofounders
+
+If these three assumptions hold, the main causal effects can be estimated with consistency and asymptotic lack of bias. 
+
+Some discussion from [Andrew Gelman](http://andrewgelman.com/2009/07/14/how_to_think_ab_2/)
+
+Andrew makes the case:  Z is the instrument, T is treatment and y is outcome.  Then Z affects T and y.  However, if the effect of Z on T is 0.8 and the effect of Z on y is 10, this is usually reported as 10/0.8 = 12.5.  However, it is good to keep them separate. 
+
+If severity of homocide penalties is an instrument (z) for the test of whether severity of deformation (t) laws affects reporting of corruption (y), this means that states with higher penalties for murder had higher penalties for defamation; states with higher penalties for murder had less reporting of corruption.  Does this say anything beyond the original finding that higher penalties for defamation had lower reporting of corruption? 
+
+In this case, the instument, proximity to college affects amount of schooling and the level of earnings.  
+
+In 
