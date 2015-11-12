@@ -1,3 +1,23 @@
+# from http://www.brodrigues.co/2015/11/11/bootstrapping-did-with-r/
+# write.table(data, "C:/Users/Toshiba/Google Drive/Research/GIT/Econometrics2/
+# Data/data.csv", sep = ".", row.names = FALSE)
+library(boot)
+my_data <- read.csv("Data/data.csv")
+run_DiD <- function(my_data, indices){
+  d <- my_data[indices,]
+  return(
+      mean(d$rprice[d$year == 1981 & d$nearinc == 1]) -
+      mean(d$rprice[d$year == 1981 & d$nearinc == 0]) -
+      (mean(d$rprice[d$year == 1978 & d$nearinc == 1]) -
+      mean(d$rprice[d$year == 1978 & d$nearinc == 0]))
+)
+}
+boot_est <- boot(d, run_DiD, R = 1000, parallel = "multicore", ncpus = 2)
+boot_est
+quantile(boot_est$t, c(0.025, 0.975))
+boot_est$t0/sd(boot_est$t)
+plot(density(boot_est$t))
+plot(boot_est$t, type = 'l')
 # from http://www.mayin.org/ajayshah/KB/R/documents/boot.html
 require(boot)
 x <- c(10, 20, 30, 40, 50)
