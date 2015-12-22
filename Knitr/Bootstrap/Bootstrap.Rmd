@@ -1,0 +1,17 @@
+---
+title: "Bootstrap"
+author: "Rob Hayward"
+date: "22 December 2015"
+output: html_document
+---
+
+# Boostrap Time series
+[Ravi Eran](http://eranraviv.com/bootstrapping-time-series-r-code/)
+This is an example to time series boostrap.  The data are unemployment and inflation data. There are two methods
+
+* Estimate the model, boostrap the residuals to back out the observations using the estimated parameters. 
+```{r}
+options(digits = 4)
+library(tseries)
+y = read.csv("../../Data/EUmis.csv", stringsAsFactors = False)
+```

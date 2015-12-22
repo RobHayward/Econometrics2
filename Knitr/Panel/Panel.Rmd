@@ -1,0 +1,116 @@
+---
+title: "Panel data"
+author: "Rob Hayward"
+date: "15 November 2015"
+output: 
+  html_document: 
+    highlight: tango
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+---
+# Introduction
+## `plm` package
+This is the vignette for the `plm` package.  This has already been conducted somewhere. Linear model is of the form: 
+
+$$ y_{it} = \alpha_{it} + \beta^T_{it}x_{it} + u_{it}$$
+
+A range of assumptions are made about the parameters, the errors and the exogeneity of the regressors. The most common assumption is that $\alpha_{it} = \alpha$ and $\beta_{it} = \beta$, giving the model
+
+
+$$ y_{it} = \alpha + \beta^Tx_{it} + u_{it}$$
+
+This is the *pooling model*.
+
+It is also possible to model individual hetogeneity or time variation. The error term is assumed to have two components: one specific to the individual that does not change over time and one that does. 
+
+$$ y_{it} = \alpha + \beta^Tx_{it} + u_i + \varepsilon_{it}$$
+
+It is possible to model individual and time effects if $u_{it} = u_i + \lambda_t + \varepsilon_{it}$ 
+
+Estimation method depends on the nature of the error term. The ideosyncratic error ($e_{it}$) is usually assumed to be well-behaved and independent of the individual error and the regressor; the individual component may be independent of the regressors or correlated. If it is correlated, the OLS estimator of $\beta$ would be inconsistent and therefore it is usual to estimate $u_i$.  This is called the *fixed effects* model or *within* or *least squares dummy variables*. 
+
+If the individual $u_t$ are uncorrelated with the regressors a *random effects* model is used and the overall error ($U_{it}) is also uncorrelated so OLS is consistent but inefficient.  *Generalised Least Squares (GLS)* is then used. This is based on an estimate of the two error components. 
+
+If the individual component does not exist, a *pooled model* is used. If the error term has hetroskedasticity or serial correlation, *unrestricted* or *general* GLS are used.  A *first difference* or *FD* model will use first difference of dependent and independnet variables if there is strong serial correlation. 
+
+$$\Delta y_{it} = \beta^T \Delta x_{it} + \Delta u_{it}$$
+
+The *between* model is computed from time (group) averages of the data, discards all the information on intragroup variability but is consisetnt in some setting (like non-stationary data). 
+
+Variable coefficient models relax the assumption that $\beta_{it} = \beta$ for all i and t.  Fixed coefficient models allow the coefficients to vary across one of the two dimensions; random coefficient models assume that they vary randomally around a common average as $\beta_{it} = \beta + \eta_i$ where $\eta_i$ is a group (time) specific effect with a mean zero.
+
+## Specification method
+
+* pooling test: same coefficient apply across all individuals
+* test for unobserved group or time effects. 
+* test for fixed or random effects with *Hausemann*-type test (null of no significant difference between the two estimators - in that case use the more efficient random effects). 
+* Robustness checks on the errors
+
+```{r, message=FALSE}
+library(plm)
+data('Grunfeld')
+data('EmplUK')
+data('Produc')
+data('Wages')
+head(Grunfeld)
+E <- pdata.frame(EmplUK, index = c("firm", "year"), drop.index = TRUE, 
+                 row.names = TRUE)
+head(E)
+```
+An object of class `pseries` has methods `summary` (which shows the amount of variation associated with time and id) and `as.matrix` (which shows series in rows).
+
+```{r}
+summary(E$emp)
+head(as.matrix(E$emp))
+```
+
+##Between and within
+`Between` and `between` returns the individual means; `within` returns the deviations from individual means; `diff` returns the first difference; `lag` returns the lag (accounting for the individuals). 
+
+```{r}
+head(lag(E$emp, 0:2))
+head(diff(E$emp), 10)
+head(lag(E$emp, 2), 10)
+head(Within(E$emp))
+head(between(E$emp), 4)
+head(Between(E$emp), 10)
+```
+
+##Model estimation
+The following models can be estimated
+
+* fixed effects (`within`)
+* pooling (`pooling`)
+* first-difference (`fd`)
+* between model (`between`)
+* error components (`random`)
+
+For the basic fixed effects and random effects, 
+```{r}
+grun.fe <- plm(inv ~ value + capital, data = Grunfeld, model = 'within')
+grun.re <- plm(inv ~ value + capital, data = Grunfeld, model = 'random')
+summary(grun.fe)
+summary(grun.re)
+```
+
+There are a number of ways that the fixed effects can be display from the `fixef` function: 'level' as the level, `dmand` as the deviation from the mean and 'dfirst' as the deviation from the first. 
+
+```{r}
+summary(fixef(grun.fe, type = 'dmean'))
+```
+
+For a *two-way effeft model* an additional arguement is needed. 
+```{r}
+grun.twfe <- plm(inv ~ value + capital, data = Grunfeld, model = "within", 
+                 effect = "twoways")
+fixef(grun.twfe, effect = 'time')
+```
+
+## [You Tube](https://www.youtube.com/watch?v=1pST2lUx6QM)
+# Another R package
+This comes from [Anihoa Vega-Bayo](https://journal.r-project.org/archive/accepted/vega-bayo.pdf)
+
+There is a worked example that looks at the integration of Hong Kong with China. It will estiamte the effect of different programmes or interventions. Case studies can compare the treatment group with the control group. The control gives an idea of what would have happened to the treament group if the intervention had not taken place. This is a panel data approach rather than the use of *synthetic control method*. 
+
+
