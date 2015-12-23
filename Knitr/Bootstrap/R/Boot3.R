@@ -41,6 +41,7 @@ plot(arima.sim(list(order = c(numlags, 0, 0),
                            aic = F)$ar), n = n, sd = sd(y)/2))
 #------------------------------------------------
 # block boostrap
+# check the autocorrelation
 acf(as.numeric(y))
 gprob = 1/20
 R = 100
@@ -49,11 +50,13 @@ for(r in 1:R){
   loc = round(runif(1, 1, n))
   for(i in 1:n){
     g1 = runif(1, 0, 1)
+    #80% of the time there will be a run, otherwise, choose another random number
     if(g1 > gprob){loc = loc + 1} else {loc = round(runif(1, 1, n))}
     if(loc > n) loc = loc - n
     ystar[i, r] = y[loc]
     
   }
 }
-plot(ystar[, sample(1:n, 1)], ty = 'l', main = "Pick random realisation")
+plot(ystar[, sample(1:R, 1)], ty = 'l', main = "Pick random realisation")
 plot(y, ty = 'l', main = "Original Series")
+
