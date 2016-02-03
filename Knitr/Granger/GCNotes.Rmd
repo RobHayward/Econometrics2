@@ -1,0 +1,52 @@
+---
+title: "Granger Causality"
+author: "Rob Hayward"
+date: "Wednesday, February 03, 2016"
+output: word_document
+---
+
+## The model
+$$y_t = \alpha_0 + \sum_{i =1}^N \beta_i y_{t-i} + \sum_{i = 1}^N \gamma_i x_{x-i} + \varepsilon_t$$
+
+The lag length is usually determined by use of *Information Criteria*
+
+* Akaike Information Criterion (AIC) 
+* Bayesian Information Criterion (BIC)
+
+I am not sure that it is possible to do that in excel as you will not have the *Log-likelood function*
+
+Nontheless, an alternative is to add lags until the residuals look like *white-noise*.
+
+## Testing
+
+If $\gamma_i \neq 0$ for all $i$, it can be said that x *granger-causes* y.  This means than past values of x are useful for predicting y.  The test is a test of the null hypothesis $\gamma_i = 0$. This is done in two ways. 
+
+* Use the t-test on each of the individual $\gamma_i$
+* Use the F-test to the *joint hypothesis* $\gamma_1 = \gamma_2 = \gamma_3 = 0$
+
+###T-test
+The t-test is based on 
+
+$$t = \frac{\hat{\gamma_i} - 0}{SE(\gamma_i)}$$
+
+The critical values can be noted from the tables but essentially it is about 2. 
+
+###F-test
+The F-test is based on 
+
+$$F = \frac{SSR_r - SSR_{ur}/m}{SSR_u/(n-k)}$$
+
+where, $SSR_r$ is the *sum of squared residuals* from the restricted model; $SSR_{ur}$ is the sum of squared residuals from the unrestricted model, $m$ is the number of *restrictions* (see below); $n$ is the number of observations and $k$ is the number of parameters estimated in the unrestricted equation. 
+
+The unrestricted equation is 
+
+$$y_t = \alpha_0 + \sum_{i =1}^N \beta_i y_{t-i} + \sum_{i = 1}^N \gamma_i x_{x-i} + \varepsilon_t$$
+
+Assuming that we use a lag of 2 so $N = 2$, this would give 5 parameters to estimate ($\alpha_0, \beta_1, \beta_2, \gamma_1 and \gamma_2$).  
+
+The restricted equation is 
+
+$$y_t = \alpha_0 + \sum_{i =1}^N \beta_i y_{t-i} + + \varepsilon_t$$
+
+It is restricted by forcing $\gamma_1$ and $\gamma_2$ to be equal to zero.  Therefore, there are 2 restrictons and $m = 2$. 
+
